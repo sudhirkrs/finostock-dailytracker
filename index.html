@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finostock — Daily Report (Sushil)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500&display=swap');
+
+:root{
+  --navy:#0f2744; --navy2:#1a3a5c; --gold:#c9a84c; --green:#2d9e6b;
+  --bg:#f4f6f9; --white:#fff; --border:#e0e6ef; --text:#1a2840;
+  --muted:#7a8fa6; --light:#edf2f8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);padding-bottom:40px;}
+
+.header{background:var(--navy);padding:16px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:10;}
+.mark{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);font-size:15px;}
+.htext{color:#fff;font-size:15px;font-weight:600;}
+.hsub{color:var(--gold);font-size:11px;}
+
+.wrap{max-width:720px;margin:0 auto;padding:20px;}
+.intro{margin-bottom:18px;}
+.intro h2{font-size:18px;color:var(--navy);}
+.intro p{font-size:13px;color:var(--muted);margin-top:3px;}
+
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px;}
+.ct{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:14px;display:flex;gap:6px;align-items:center;}
+.ct span{font-size:14px;}
+
+.field{margin-bottom:12px;}
+.field:last-child{margin-bottom:0;}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px;}
+.field input,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--light);color:var(--text);}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--navy2);background:#fff;box-shadow:0 0 0 3px rgba(26,58,92,.08);}
+.field textarea{resize:vertical;min-height:64px;}
+
+.ng{display:grid;gap:10px;}
+.ng3{grid-template-columns:repeat(3,1fr);}
+.ni label{display:block;font-size:10px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px;}
+.ni input{width:100%;padding:9px;border:1px solid var(--border);border-radius:8px;font-size:15px;font-family:'DM Mono',monospace;text-align:center;background:var(--light);color:var(--navy);}
+.ni input:focus{outline:none;border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(201,168,76,.12);}
+
+.rg{display:flex;gap:8px;}
+.ro{flex:1;padding:10px 4px;border:1px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;font-size:12px;font-weight:500;color:var(--muted);background:var(--light);transition:.2s;}
+.ro:hover{border-color:var(--navy);color:var(--navy);}
+.ro.sel{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+.btn{width:100%;padding:15px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:.2s;}
+.btn:hover{background:var(--navy2);}
+.btn:disabled{opacity:.6;cursor:not-allowed;}
+
+.msg{padding:14px;border-radius:10px;font-size:14px;font-weight:500;margin-bottom:14px;display:none;}
+.msg.ok{background:#d1fae5;color:#065f46;}
+.msg.err{background:#fee2e2;color:#7f1d1d;}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="mark">F</div>
+  <div>
+    <div class="htext">Finostock</div>
+    <div class="hsub">Daily EOD Report — Sushil Dixit</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="intro">
+    <h2>End of Day Report</h2>
+    <p>Fill this every evening by 6:30 PM. Takes 5 minutes. Submit when done — it goes straight to the manager.</p>
+  </div>
+
+  <div id="msg" class="msg"></div>
+
+  <div class="card">
+    <div class="ct"><span>📅</span> Details</div>
+    <div class="field"><label>Date</label><input type="date" id="f-date"></div>
+    <div class="field">
+      <label>How was today?</label>
+      <div class="rg">
+        <div class="ro" onclick="rate(1)">😞 Poor</div>
+        <div class="ro" onclick="rate(2)">😐 Okay</div>
+        <div class="ro" onclick="rate(3)">🙂 Good</div>
+        <div class="ro" onclick="rate(4)">😄 Great</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span>📤</span> Outreach Today</div>
+    <div class="ng ng3">
+      <div class="ni"><label>WhatsApp</label><input type="number" id="f-wa" min="0" placeholder="0"></div>
+      <div class="ni"><label>LinkedIn</label><input type="number" id="f-li" min="0" placeholder="0"></div>
+      <div class="ni"><label>Calls</label><input type="number" id="f-calls" min="0" placeholder="0"></div>
+    </div>
+    <div class="ng ng3" style="margin-top:10px">
+      <div class="ni"><label>Emails</label><input type="number" id="f-email" min="0" placeholder="0"></div>
+      <div class="ni"><label>Responses</label><input type="number" id="f-resp" min="0" placeholder="0"></div>
+      <div class="ni"><label>Interested</label><input type="number" id="f-int" min="0" placeholder="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span>📞</span> Consultations & Conversions</div>
+    <div class="ng ng3">
+      <div class="ni"><label>Scheduled</label><input type="number" id="f-sched" min="0" placeholder="0"></div>
+      <div class="ni"><label>Consults Done</label><input type="number" id="f-cons" min="0" placeholder="0"></div>
+      <div class="ni"><label>Clients Closed</label><input type="number" id="f-closed" min="0" placeholder="0"></div>
+    </div>
+    <div class="ng ng3" style="margin-top:10px">
+      <div class="ni"><label>KYC Started</label><input type="number" id="f-kycs" min="0" placeholder="0"></div>
+      <div class="ni"><label>KYC Done</label><input type="number" id="f-kycd" min="0" placeholder="0"></div>
+      <div class="ni"><label>Referrals</label><input type="number" id="f-ref" min="0" placeholder="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span>🎯</span> Pipeline (Running Totals)</div>
+    <div class="ng ng3">
+      <div class="ni"><label>❄️ Cold</label><input type="number" id="f-cold" min="0" placeholder="0"></div>
+      <div class="ni"><label>🌡️ Warm</label><input type="number" id="f-warm" min="0" placeholder="0"></div>
+      <div class="ni"><label>🔥 Hot</label><input type="number" id="f-hot" min="0" placeholder="0"></div>
+    </div>
+    <div class="ng ng3" style="margin-top:10px">
+      <div class="ni"><label>✅ Clients</label><input type="number" id="f-tcl" min="0" placeholder="0"></div>
+      <div class="ni"><label>Rev Today ₹</label><input type="number" id="f-revd" min="0" placeholder="0"></div>
+      <div class="ni"><label>Total Rev ₹</label><input type="number" id="f-revt" min="0" placeholder="0"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span>📱</span> Social Media</div>
+    <div class="ng ng3">
+      <div class="ni"><label>LI Posts</label><input type="number" id="f-lip" min="0" placeholder="0"></div>
+      <div class="ni"><label>FB Posts</label><input type="number" id="f-fbp" min="0" placeholder="0"></div>
+      <div class="ni"><label>WA Status</label><input type="number" id="f-was" min="0" placeholder="0"></div>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>Total Engagement (likes + comments + DMs)</label>
+      <input type="number" id="f-eng" min="0" placeholder="0">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span>⚙️</span> Operations</div>
+    <div class="ng ng3">
+      <div class="ni"><label>Docs Collected</label><input type="number" id="f-doc" min="0" placeholder="0"></div>
+      <div class="ni"><label>Transactions</label><input type="number" id="f-txn" min="0" placeholder="0"></div>
+      <div class="ni"><label>Updates Sent</label><input type="number" id="f-upd" min="0" placeholder="0"></div>
+    </div>
+    <div class="field" style="margin-top:10px"><label>Issues / Errors today</label><input type="text" id="f-iss" placeholder="None, or describe"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct"><span>📌</span> Tomorrow & Notes</div>
+    <div class="field"><label>Priority 1</label><input type="text" id="f-p1" placeholder="Most important task"></div>
+    <div class="field"><label>Priority 2</label><input type="text" id="f-p2"></div>
+    <div class="field"><label>Priority 3</label><input type="text" id="f-p3"></div>
+    <div class="field"><label>Key win today</label><textarea id="f-win"></textarea></div>
+    <div class="field"><label>Help needed from manager</label><textarea id="f-help"></textarea></div>
+  </div>
+
+  <button class="btn" id="submitBtn" onclick="submit()">✅ Submit EOD Report</button>
+</div>
+
+<script>
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbw3_V51eJ2dCu6ZvyF7oAjO3IhhjAPnn4riuqZROWFL2ZB13jTB_CyJTv4sN3a3O5MJ/exec";
+let rating = 0;
+
+document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+function rate(r){
+  rating = r;
+  document.querySelectorAll('.ro').forEach((el,i)=>el.classList.toggle('sel', i+1===r));
+}
+function n(id){return parseInt(document.getElementById(id).value)||0;}
+function s(id){return document.getElementById(id).value.trim();}
+
+function submit(){
+  const date = s('f-date');
+  if(!date){ showMsg('Please pick a date first.','err'); return; }
+
+  const payload = {
+    date, rating,
+    wa:n('f-wa'), li:n('f-li'), calls:n('f-calls'), email:n('f-email'),
+    resp:n('f-resp'), int:n('f-int'),
+    sched:n('f-sched'), cons:n('f-cons'), closed:n('f-closed'),
+    kycs:n('f-kycs'), kycd:n('f-kycd'), ref:n('f-ref'),
+    cold:n('f-cold'), warm:n('f-warm'), hot:n('f-hot'),
+    tcl:n('f-tcl'), revd:n('f-revd'), revt:n('f-revt'),
+    lip:n('f-lip'), fbp:n('f-fbp'), was:n('f-was'), eng:n('f-eng'),
+    doc:n('f-doc'), txn:n('f-txn'), upd:n('f-upd'), iss:s('f-iss'),
+    p1:s('f-p1'), p2:s('f-p2'), p3:s('f-p3'), win:s('f-win'), help:s('f-help')
+  };
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  fetch(ENDPOINT, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  }).then(()=>{
+    showMsg('✅ Report submitted for '+date+'. It is now in the manager\'s sheet.','ok');
+    resetForm();
+    btn.disabled=false; btn.textContent='✅ Submit EOD Report';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }).catch(()=>{
+    showMsg('⚠️ Could not submit. Check internet and try again.','err');
+    btn.disabled=false; btn.textContent='✅ Submit EOD Report';
+  });
+}
+
+function showMsg(text,type){
+  const m=document.getElementById('msg');
+  m.textContent=text; m.className='msg '+type; m.style.display='block';
+  if(type==='ok') setTimeout(()=>m.style.display='none',6000);
+}
+
+function resetForm(){
+  ['f-wa','f-li','f-calls','f-email','f-resp','f-int','f-sched','f-cons','f-closed',
+   'f-kycs','f-kycd','f-ref','f-cold','f-warm','f-hot','f-tcl','f-revd','f-revt',
+   'f-lip','f-fbp','f-was','f-eng','f-doc','f-txn','f-upd'].forEach(id=>document.getElementById(id).value='');
+  ['f-iss','f-p1','f-p2','f-p3','f-win','f-help'].forEach(id=>document.getElementById(id).value='');
+  rating=0; document.querySelectorAll('.ro').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+}
+</script>
+</body>
+</html>
